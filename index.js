@@ -14,20 +14,11 @@ function parseTicketWorks(content) {
     return works || [];
 }
 
-// считаем общую цену по заявке
-function calculateTicketPrice(works) {
-    let summ = 0;
-    for (const work of works) {
-        summ += WorksCollection.getPrice(work);
-    }
-    return summ;
-}
-
 // создаем информацию о заявке
 function createTicketInfo(ticket) {
     const { name, id, content } = ticket;
     const works = parseTicketWorks(content);
-    const price = calculateTicketPrice(works);
+    const price = WorksCollection.calculateWorksSum(works);
     return { id, name, works, price };
 }
 
