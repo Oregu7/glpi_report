@@ -1,8 +1,8 @@
 const _ = require("lodash");
 const worksData = require("./works-data.json.js");
 
-function getWorkByCode(code) {
-    return _.find(worksData, { code });
+function getWorkByCode(code, data = worksData) {
+    return _.find(data, { code });
 }
 
 function getWorkPrice(code) {
