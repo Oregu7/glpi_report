@@ -11,10 +11,11 @@ const sequelize = new Sequelize(database.name, database.user, database.password,
 
 async function getItilsolutions() {
     const sqlQuery = "SELECT id, items_id, content from glpi_itilsolutions where itemtype='Ticket';";
-    return await sequelize.query(sqlQuery);
+    const [data] = await sequelize.query(sqlQuery);
+    return data;
 }
 
 module.exports = {
     sequelize,
     getItilsolutions,
-}
+};
