@@ -3,8 +3,10 @@ const WorksCollection = require("./components/works");
 
 async function main() {
     const itilsolutions = await getItilsolutions();
+    console.log(itilsolutions);
     const ticketsInfo = itilsolutions.map(createTicketInfo);
-    const totalSumm = calculateTotalSumm(ticketsInfo);
+    const totalSum = calculateTotalSum(ticketsInfo);
+    console.log(totalSum);
 }
 
 // парсим список работ по заявке
@@ -22,9 +24,11 @@ function createTicketInfo(ticket) {
     return { id, name, works, price };
 }
 
-function calculateTotalSumm(ticketsInfo) {
-    const totalSumm = ticketsInfo.reduce((accumulator, ticketInfo) => {
+function calculateTotalSum(ticketsInfo) {
+    const totalSum = ticketsInfo.reduce((accumulator, ticketInfo) => {
         return accumulator + ticketInfo.price;
     }, 0);
-    return totalSumm;
+    return totalSum;
 }
+
+main().then(console.log);
