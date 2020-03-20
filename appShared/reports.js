@@ -1,21 +1,21 @@
-const { getItilsolutions } = require("./db");
 const WorksCollection = require("./components/works");
 
-// считаем общую сумму
-async function calculateTotalSum() {
-    const itilsolutions = await getItilsolutions();
+// Report: считаем общую сумму
+function createTotalReport(itilsolutions) {
     const ticketsInfo = itilsolutions.map(createTicketInfo);
     const totalSum = ticketsInfo.reduce((accumulator, ticketInfo) => {
         return accumulator + ticketInfo.price;
     }, 0);
+    const worksCount = ticketsInfo.reduce((accumulator, ticketInfo) => {
+        return accumulator + ticketInfo.works.length;
+    }, 0);
 
-    return totalSum;
+    return { worksCount, totalSum, ticketsCount: ticketsInfo.length };
 }
 
-// считаем сумму по работам
-async function groupByWorksAndCalculateTotalSum() {
+// Report: считаем сумму по работам
+function createTotalWorksReport(itilsolutions) {
     const worksList = WorksCollection.createWorksDataCopy();
-    const itilsolutions = await getItilsolutions();
     const ticketsInfo = itilsolutions.map(createTicketInfo);
     for (const ticketInfo of ticketsInfo) {
         for (const workCode of ticketInfo.works) {
@@ -23,6 +23,7 @@ async function groupByWorksAndCalculateTotalSum() {
 
             if (work) {
                 work.count += 1;
+                work.ticketList.push(ticketInfo.itemID);
             }
         }
     }
@@ -41,13 +42,13 @@ function parseTicketWorks(content) {
 
 // создаем информацию о заявке
 function createTicketInfo(ticket) {
-    const { name, id, content } = ticket;
+    const { name, id, content, items_id: itemID } = ticket;
     const works = parseTicketWorks(content);
     const price = WorksCollection.calculateWorksSum(works);
-    return { id, name, works, price };
+    return { id, itemID, name, works, price };
 }
 
 module.exports = {
-    calculateTotalSum,
-    groupByWorksAndCalculateTotalSum,
+    createTotalReport,
+    createTotalWorksReport,
 };

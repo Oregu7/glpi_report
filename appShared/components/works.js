@@ -18,7 +18,7 @@ function calculateWorksSum(works) {
 }
 
 function createWorksDataCopy() {
-    return worksData.map((workData) => Object.assign({}, workData, { sum: 0, count: 0 }));
+    return worksData.map((workData) => Object.assign({}, workData, { sum: 0, count: 0, ticketList: [] }));
 }
 
 module.exports = {

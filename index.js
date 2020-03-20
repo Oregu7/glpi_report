@@ -1,13 +1,14 @@
 const fs = require("fs");
-const { calculateTotalSum, groupByWorksAndCalculateTotalSum } = require("./appShared/utls");
+const { getItilsolutions } = require("./appShared/db");
+const { createTotalReport, createTotalWorksReport } = require("./appShared/reports");
 
-calculateTotalSum()
-    .then(console.log)
-    .catch(console.error);
+async function main() {
+    const itilsolutions = await getItilsolutions();
+    const totalReport = createTotalReport(itilsolutions);
+    const totalWorksReport = createTotalWorksReport(itilsolutions);
 
-groupByWorksAndCalculateTotalSum()
-    .then((worksList) => {
-        fs.writeFileSync("workPrices.json", JSON.stringify(worksList));
-        console.log(worksList);
-    })
-    .catch(console.error);
+    console.log(totalReport);
+    fs.writeFileSync("workPrices.json", JSON.stringify(totalWorksReport));
+}
+
+main().catch(console.error);
