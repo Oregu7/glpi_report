@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/materia/bootstrap.min.css">
+</head>
+
+<body>
+    <!-- As a heading -->
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1">GLPI Отчеты</span>
+    </nav>
+    <br>
+    <div class="container" id="reports-app">
+        <div id="report-form">
+            <div class="form-group">
+                <label for="inputReportType">Выберите тип отчета:</label>
+                <select class="form-control" id="inputReportType" name="inputReportType" v-model="repot_type">
+                  <option value="1">Общий по работам</option>
+                  <option value="2">Общий по заявкам</option>
+                  <option value="3">Общий по заявкам и работам</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="inputDateBefore">Дата от</label>
+                    <input type="date" class="form-control" id="inputDateBefore" v-model="date_from">
+                </div>
+                <div class="form-group col">
+                    <label for="inputDateAfter">Дата до</label>
+                    <input type="date" class="form-control" id="inputDateAfter" v-model="date_to">
+                </div>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" v-on:click="createReport">
+                    Создать отчет
+                </button>
+            </div>
+        </div>
+        <div class="box" v-cloak v-show="fields.length">
+            <div class="box-header">
+                <h3 class="box-title">Результат отчета</h3>
+            </div>
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-hover" id="table-report">
+                    <thead>
+                        <th v-for="field in fields">{{ field }}</th>
+                    </thead>
+                    <tbody>
+                        <tr v-for="row in rows">
+                            <td v-for="item in row">{{ item }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <script>
+        const reportsApp = new Vue({
+            el: "#reports-app",
+            data: {
+                fields: [],
+                rows: [],
+                repot_type: 1,
+                date_from: "",
+                date_to: "",
+            },
+            methods: {
+                createReport() {
+                    // проверяем даты
+                    if ((this.date_from && this.date_to) && this.date_from > this.date_to) {
+                        return Swal.fire({
+                            type: "warning",
+                            title: "[Дата от] не может быть больше [Даты до]!"
+                        });
+                    }
+                    const data = {
+                        id: this.repot_type,
+                        dateFrom: this.date_from,
+                        dateTo: this.date_to,
+                    };
+                    // отправляем запрос
+                    axios.post("/reports", data).then((response) => {
+                        const data = response.data;
+                        if (!data.fields || !data.fields.length)
+                            return Swal.fire({
+                                type: "info",
+                                title: "Данные не были найдены!"
+                            });
+
+                        this.fields = data.fields;
+                        this.rows = data.rows;
+                    }).catch((err) => {
+                        console.error(err);
+                        Swal.fire({
+                            type: "error",
+                            title: "Произошла ошибка, посмотрите логи!"
+                        });
+                    });
+                },
+            },
+        });
+    </script>
+</body>
+
+</html>

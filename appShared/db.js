@@ -9,10 +9,31 @@ const sequelize = new Sequelize(database.name, database.user, database.password,
 });
 
 
-async function getItilsolutions() {
-    const sqlQuery = "SELECT id, items_id, content from glpi_itilsolutions where itemtype='Ticket';";
+async function getItilsolutions(dateFrom, dateTo) {
+    let dateWhere = createDateWhere(dateFrom, dateTo);
+    let sqlQuery = "SELECT id, items_id, content FROM glpi_itilsolutions WHERE itemtype='Ticket'";
+
+    if (dateWhere) {
+        sqlQuery += ` AND ${dateWhere}`;
+    }
+
     const [data] = await sequelize.query(sqlQuery);
     return data;
+}
+
+function createDateWhere(dateFrom, dateTo, fieldName = "date_creation") {
+    let where = fieldName;
+    if (!dateFrom && !dateTo) {
+        return "";
+    } else if (dateFrom && dateTo) {
+        where += ` BETWEEN '${dateFrom}' AND '${dateTo}'`;
+    } else if (dateFrom && !dateTo) {
+        where += ` >= '${dateFrom}'`;
+    } else {
+        where += ` <= '${dateTo}'`;
+    }
+
+    return where;
 }
 
 module.exports = {

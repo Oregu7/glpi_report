@@ -9,8 +9,9 @@ function createTotalReport(itilsolutions) {
     const worksCount = ticketsInfo.reduce((accumulator, ticketInfo) => {
         return accumulator + ticketInfo.works.length;
     }, 0);
+    const result = [{ worksCount, totalSum, ticketsCount: ticketsInfo.length }];
 
-    return { worksCount, totalSum, ticketsCount: ticketsInfo.length };
+    return compileReport(result);
 }
 
 // Report: считаем сумму по работам
@@ -27,10 +28,12 @@ function createTotalWorksReport(itilsolutions) {
             }
         }
     }
-    return worksList.map((work) => {
+    const result = worksList.map((work) => {
         work.sum = work.price * work.count;
         return work;
     });
+
+    return compileReport(result);
 }
 
 // парсим список работ по заявке
@@ -46,6 +49,12 @@ function createTicketInfo(ticket) {
     const works = parseTicketWorks(content);
     const price = WorksCollection.calculateWorksSum(works);
     return { id, itemID, name, works, price };
+}
+
+// компилируем отчет
+function compileReport(data) {
+    const fields = Object.keys(data[0]);
+    return { fields, rows: data };
 }
 
 module.exports = {
