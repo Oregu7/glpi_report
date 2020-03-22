@@ -24,10 +24,10 @@ app.post("/reports", async(req, res) => {
     let response = {};
     const itilsolutions = await getItilsolutions(dateFrom, dateTo);
     switch (id) {
-        case 1:
+        case "1":
             response = createTotalReport(itilsolutions);
             break;
-        case 2:
+        case "2":
             response = createTotalWorksReport(itilsolutions);
             break;
         default:
