@@ -1,4 +1,11 @@
-const http = require("http");
-const app = require("../app");
+const config = require("config");
+const https = require("https");
+const fs = require("fs");
 
-http.createServer(app).listen(3000);
+const app = require("../app");
+const httpsOptions = {
+    key: fs.readFileSync(config.get("server.serverKey")),
+    cert: fs.readFileSync(config.get("server.serverCrt")),
+};
+
+https.createServer(httpsOptions, app).listen(3000);

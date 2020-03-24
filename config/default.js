@@ -6,6 +6,8 @@ const REQUIRED_VARIABLES = [
     "DB_NAME",
     "DB_USER",
     "DB_PASSWORD",
+    "SERVER_KEY",
+    "SERVER_CRT",
 ];
 REQUIRED_VARIABLES.forEach((name) => {
     if (!process.env[name]) {
@@ -18,6 +20,8 @@ module.exports = {
     server: {
         port: Number(process.env.PORT),
         ip: process.env.IP,
+        serverKey: process.env.SERVER_KEY,
+        serverCrt: process.env.SERVER_CRT,
     },
     database: {
         host: process.env.DB_HOST,
