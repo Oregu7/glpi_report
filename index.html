@@ -67,6 +67,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.2/xlsx.core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
     <script>
         const reportsApp = new Vue({
             el: "#reports-app",
@@ -102,6 +106,10 @@
 
                         this.fields = data.fields;
                         this.rows = data.rows;
+
+                        setTimeout(function() {
+                            reportTable.reset();
+                        }, 1500);
                     }).catch((err) => {
                         console.error(err);
                         Swal.fire({
@@ -112,6 +120,7 @@
                 },
             },
         });
+        var reportTable = $("#table-report").tableExport({ bootstrap: true });
     </script>
 </body>
 

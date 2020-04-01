@@ -31,6 +31,8 @@ function createTotalWorksReport(itilsolutions) {
     const result = worksList.map((work) => {
         work.sum = work.price * work.count;
         work.ticketList = work.ticketList.join(",");
+        delete work.type;
+
         return work;
     });
 
