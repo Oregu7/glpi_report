@@ -121,7 +121,11 @@
                 },
             },
         });
-        var reportTable = $("#table-report").tableExport({ bootstrap: true });
+        var reportTable = $("#table-report").tableExport({ 
+            bootstrap: true,
+            headings: true,
+            formats: ["xls"], 
+        });
     </script>
 </body>
 
