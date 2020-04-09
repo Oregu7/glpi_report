@@ -41,7 +41,7 @@ function createTotalWorksReport(itilsolutions) {
 
 // парсим список работ по заявке
 function parseTicketWorks(content) {
-    const workRegexp = /\d{2}\.\d{2}\.\d{4}/g;
+    const workRegexp = /\d{1,2}\.\d{1,2}\.\d{1,2}/g;
     const works = content.match(workRegexp);
     return works || [];
 }
