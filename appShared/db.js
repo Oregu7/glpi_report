@@ -23,17 +23,21 @@ async function getItilsolutions(dateFrom, dateTo) {
 
 function createDateWhere(dateFrom, dateTo, fieldName = "date_creation") {
     let where = fieldName;
-    if (!dateFrom && !dateTo) {
+    if (!isDate(dateFrom) && !isDate(dateTo)) {
         return "";
-    } else if (dateFrom && dateTo) {
+    } else if (isDate(dateFrom) && isDate(dateTo)) {
         where += ` BETWEEN '${dateFrom}' AND '${dateTo}'`;
-    } else if (dateFrom && !dateTo) {
+    } else if (isDate(dateFrom) && !isDate(dateTo)) {
         where += ` >= '${dateFrom}'`;
     } else {
         where += ` <= '${dateTo}'`;
     }
 
     return where;
+}
+
+function isDate(date) {
+    return Date.parse(date);
 }
 
 module.exports = {

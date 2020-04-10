@@ -43,8 +43,16 @@
                 </button>
             </div>
         </div>
-        
-        <table class="table table-responsive" v-show="fields.length" id="table-report">
+        <br><br>
+        <button class="btn btn-success" v-show="fields.length" v-on:click="downloadReport">
+            <svg class="bi bi-download" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M.5 8a.5.5 0 01.5.5V12a1 1 0 001 1h12a1 1 0 001-1V8.5a.5.5 0 011 0V12a2 2 0 01-2 2H2a2 2 0 01-2-2V8.5A.5.5 0 01.5 8z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M5 7.5a.5.5 0 01.707 0L8 9.793 10.293 7.5a.5.5 0 11.707.707l-2.646 2.647a.5.5 0 01-.708 0L5 8.207A.5.5 0 015 7.5z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M8 1a.5.5 0 01.5.5v8a.5.5 0 01-1 0v-8A.5.5 0 018 1z" clip-rule="evenodd"/>
+            </svg>
+            Скачать в XLSX
+        </button>
+        <table class="table table-responsive" v-show="fields.length">
             <thead class="thead-dark">
                 <th v-for="field in fields">{{ field }}</th>
             </thead>
@@ -63,9 +71,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.2/xlsx.core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
     <script>
         const reportsApp = new Vue({
             el: "#reports-app",
@@ -101,10 +106,6 @@
 
                         this.fields = data.fields;
                         this.rows = data.rows;
-
-                        setTimeout(function() {
-                            reportTable.reset();
-                        }, 1500);
                     }).catch((err) => {
                         console.error(err);
                         Swal.fire({
@@ -113,11 +114,11 @@
                         });
                     });
                 },
+                downloadReport() {
+                    const url = `/download/report?id=${this.repot_type}&dateFrom=${this.date_from}&dateTo=${this.date_to}`;
+                    window.open(url, "_blank");
+                }
             },
-        });
-        var reportTable = $("#table-report").tableExport({ 
-            bootstrap: true,
-            formats: ["xls"], 
         });
     </script>
 </body>
